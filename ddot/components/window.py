@@ -12,20 +12,28 @@ def save_context(context):
     finally:
         context.restore()
 
-layout = None
-
 def draw_text(context):
-    global layout
-    if not layout:
-        font = Pango.FontDescription()
-        font.set_family("Monospace")
-        layout = PangoCairo.create_layout(context)
-        layout.set_text("aaa", -1)
-        layout.set_font_description(font)
-
-    with save_context(context):
-        context.set_source_rgb(0, 0, 0)
-        PangoCairo.show_layout(context, layout)
+    ops = [
+        { "x": 135, "y": 86.3, "str": "a1" },
+        { "x": 315, "y": 86.3, "str": "a2" },
+        { "x": 495, "y": 86.3, "str": "a3" },
+        { "x":  27, "y": 14.3, "str": "a11" },
+        { "x":  99, "y": 14.3, "str": "a12" },
+        { "x": 171, "y": 14.3, "str": "a13" },
+        { "x": 243, "y": 14.3, "str": "a21" },
+        { "x": 315, "y": 14.3, "str": "a22" },
+        { "x": 387, "y": 14.3, "str": "a23" },
+        { "x": 459, "y": 14.3, "str": "a31" },
+        { "x": 531, "y": 14.3, "str": "a32" },
+        { "x": 603, "y": 14.3, "str": "a33" },
+        { "x": 315, "y": 158.3, "str": "a0" },
+    ]
+    for op in ops:
+        with save_context(context):
+            context.set_source_rgb(0, 0, 0)
+            context.set_font_size(14.0)
+            context.move_to(op["x"], 300 - op["y"])
+            context.show_text(op["str"])
 
 def draw_graph(area, context):
     width = area.get_allocated_width()
