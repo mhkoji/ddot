@@ -1,9 +1,8 @@
-import gi
-gi.require_version("Gtk", "3.0")
-gi.require_version('PangoCairo', '1.0')
 from gi.repository import Gtk, PangoCairo, Pango
 
 import contextlib
+
+from .toolbar import Toolbar
 
 @contextlib.contextmanager
 def save_context(context):
@@ -49,11 +48,7 @@ class Window(Gtk.Window):
         box.set_orientation(Gtk.Orientation.VERTICAL)
         self.add(box)
 
-        self.toolbar = Gtk.Toolbar()
-        self.toolbutton_search = Gtk.ToolButton()
-        self.toolbutton_search.set_label("Search")
-        self.toolbutton_search.set_icon_name("gtk-search")
-        self.toolbar.insert(self.toolbutton_search, 0)
+        self.toolbar = Toolbar()
         box.add(self.toolbar)
 
         self.drawingarea = Gtk.DrawingArea()
@@ -64,8 +59,3 @@ class Window(Gtk.Window):
 
     def on_draw(self, area, context):
         draw_graph(area, context)
-
-win = Window()
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
