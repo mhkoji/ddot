@@ -1,50 +1,6 @@
 from gi.repository import Gtk, PangoCairo, Pango
-
-import contextlib
-
-from .toolbar import Toolbar
-
-@contextlib.contextmanager
-def save_context(context):
-    try:
-        context.save()
-        yield
-    finally:
-        context.restore()
-
-def draw_text(context):
-    ops = [
-        { "x": 135, "y": 86.3, "str": "a1" },
-        { "x": 315, "y": 86.3, "str": "a2" },
-        { "x": 495, "y": 86.3, "str": "a3" },
-        { "x":  27, "y": 14.3, "str": "a11" },
-        { "x":  99, "y": 14.3, "str": "a12" },
-        { "x": 171, "y": 14.3, "str": "a13" },
-        { "x": 243, "y": 14.3, "str": "a21" },
-        { "x": 315, "y": 14.3, "str": "a22" },
-        { "x": 387, "y": 14.3, "str": "a23" },
-        { "x": 459, "y": 14.3, "str": "a31" },
-        { "x": 531, "y": 14.3, "str": "a32" },
-        { "x": 603, "y": 14.3, "str": "a33" },
-        { "x": 315, "y": 158.3, "str": "a0" },
-    ]
-    for op in ops:
-        with save_context(context):
-            context.set_source_rgb(0, 0, 0)
-            context.set_font_size(14.0)
-            context.move_to(op["x"], 300 - op["y"])
-            context.show_text(op["str"])
-
-def draw_graph(area, context):
-    width = area.get_allocated_width()
-    height = area.get_allocated_height()
-
-    context.set_source_rgb(255, 255, 255)
-    context.fill()
-    context.paint()
-
-    draw_text(context)
-
+from . import toolbar, drawingarea
+from .. import graph
 
 class Window(Gtk.Window):
     def __init__(self):
@@ -56,7 +12,7 @@ class Window(Gtk.Window):
         box.set_orientation(Gtk.Orientation.VERTICAL)
         self.add(box)
 
-        self.toolbar = Toolbar()
+        self.toolbar = toolbar.Toolbar()
         box.add(self.toolbar)
 
         self.drawingarea = Gtk.DrawingArea()
@@ -66,4 +22,19 @@ class Window(Gtk.Window):
 
 
     def on_draw(self, area, context):
-        draw_graph(area, context)
+        nodes = [
+            graph.Node(x=135, y=300-86.3, label="a1"),
+            graph.Node(x=315, y=300-86.3, label="a2"),
+            graph.Node(x=495, y=300-86.3, label="a3"),
+            graph.Node(x=27, y=300-14.3, label="a11"),
+            graph.Node(x=99, y=300-14.3, label="a12"),
+            graph.Node(x=171, y=300-14.3, label="a13"),
+            graph.Node(x=243, y=300-14.3, label="a21"),
+            graph.Node(x=315, y=300-14.3, label="a22"),
+            graph.Node(x=387, y=300-14.3, label="a23"),
+            graph.Node(x=459, y=300-14.3, label="a31"),
+            graph.Node(x=531, y=300-14.3, label="a32"),
+            graph.Node(x=603, y=300-14.3, label="a33"),
+            graph.Node(x=315, y=300-158.3, label="a0"),
+        ]
+        drawingarea.draw(area, context, nodes)
